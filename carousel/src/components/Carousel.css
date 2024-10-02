@@ -1,0 +1,30 @@
+.image{
+    width: 100%;
+    /* height: 100%; */
+    height: calc(100vh - 20px);
+}
+.visible{
+    display: block;
+}
+.hidden{
+    display: none;
+}
+.prev{
+    position: absolute;
+    left: 0;
+    top: 50%;
+    padding: 10px;
+    margin: 10px;
+}
+
+.next{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    padding: 10px;
+    margin: 10px;
+
+}
+.container{
+    padding: 10px;
+}
