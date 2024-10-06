@@ -39,4 +39,9 @@ table {
     height: auto;
     border-radius: 5px;
   }
+
+  table thead{
+    position: sticky;
+    top: 0;
+  }
   
