@@ -13,6 +13,17 @@ export default function App() {
     return r;
   }
 
+  const debounce = (fn, delay) => {
+    let timer;
+    return function timerFn(...args){
+      clearTimeout(timer);
+      timer = setTimeout(()=>{
+        fn.apply(this, args);
+      }, delay)
+    }
+  }
+
+
   useEffect(() => {
     console.log("query", searchQuery);
   }, [searchQuery]);
@@ -39,12 +50,13 @@ export default function App() {
     let filteredProducts = products && products.filter((x)=> x.title.toLowerCase().includes(value.toLowerCase()))
     setFilteredProducts(filteredProducts);
   }
+  const debouncedFn = debounce(handleInputChange, 400);
   return (
     <div className="App">
       {!isLoading && !isError && (
         <>
           <div>
-            <input type="text" placeholder="Search products here..." onInput={handleInputChange} className="input_holder"></input>
+            <input type="text" placeholder="Search products here..." onInput={debouncedFn} className="input_holder"></input>
           </div>
           <table>
             <ProductTable products={filteredProducts.length>0?filteredProducts : products}></ProductTable>
