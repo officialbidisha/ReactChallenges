@@ -1,0 +1,42 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left !important;
+  }
+  
+  table th,
+  table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+  }
+  
+  table th {
+    background-color: #f4f4f4;
+    cursor: pointer;
+  }
+  
+  table th span button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  table td img {
+    width: 50px;
+    height: auto;
+    border-radius: 5px;
+  }
+  
