@@ -7,7 +7,7 @@ const ProductTable = ({ products }) => {
     key: "price",
     direction: "ascending",
   });
-  console.log("Products inside producttable", products);
+
   const handleSort = (key) => {
     let direction = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {

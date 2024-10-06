@@ -1,9 +1,8 @@
 const TableRow = ({ product }) => {
-    const { id, title, category, price, availabilityStatus, rating, thumbnail } =
+    const { title, category, price, availabilityStatus, rating, thumbnail } =
       product;
     return (
       <tr>
-        {/* <td>{id}</td> */}
         <td>{title}</td>
         <td>{category}</td>
         <td>${price.toFixed(2)}</td>

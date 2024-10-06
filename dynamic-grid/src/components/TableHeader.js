@@ -1,10 +1,7 @@
 const TableHeader = ({ handleSort }) => {
     const handleClick = (e) => {
-      console.log(e);
-      console.log(e.target.id);
       switch (e.target.id) {
         case "rating_sorter": {
-          console.log("here");
           handleSort("rating");
           break;
         }
