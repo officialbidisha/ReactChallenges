@@ -6,8 +6,8 @@ import useIntersectionObserver from "./hooks/useIntersectionObserver";
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([]); // All loaded products
+  const [filteredProducts, setFilteredProducts] = useState([]); // Search results
   const [searchQuery, setSearchQuery] = useState("");
   const [limit] = useState(10); // Fixed limit for each page
   const [skip, setSkip] = useState(0);
@@ -23,7 +23,17 @@ export default function App() {
       const data = await response.json();
 
       if (data.products.length > 0) {
-        setProducts((prev) => [...prev, ...data.products]); // Append new products
+        const newProducts = [...products, ...data.products];
+        setProducts(newProducts); // Append new products to the existing ones
+
+        // Filter new products based on search query
+        if (searchQuery) {
+          const filtered = newProducts.filter((product) =>
+            product.title.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+          setFilteredProducts(filtered);
+        }
+
         if (data.total <= skip + limit) {
           setHasNextPage(false); // No more pages available
         }
@@ -47,39 +57,25 @@ export default function App() {
   // Ref for the last product to observe with IntersectionObserver
   const lastProductRef = useIntersectionObserver(loadMoreProducts, [hasNextPage]);
 
-  // Debounce function to handle search input
-  const debounce = (fn, delay) => {
-    let timer;
-    return function (...args) {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        fn.apply(this, args);
-      }, delay);
-    };
-  };
-
   // Handle search input changes
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
 
-    // Filter products based on search query
-    if (value.length === 0) {
-      setFilteredProducts([]); // Reset filtered products when input is empty
-      return;
+    // Filter products based on the search query
+    if (value.length > 0) {
+      const filtered = products.filter((product) =>
+        product.title.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts([]); // Reset filtered products when search query is empty
     }
-
-    const filtered = products.filter((product) =>
-      product.title.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredProducts(filtered);
   };
 
-  const debouncedFn = debounce(handleInputChange, 400);
-
-  // Fetch products when the component mounts and skip changes
+  // Fetch products when the component mounts and when `skip` changes (pagination)
   useEffect(() => {
-    fetchProducts(); // Trigger fetch on skip change (pagination)
+    fetchProducts(); // Trigger fetch when `skip` changes (for infinite scrolling)
   }, [skip]);
 
   return (
@@ -98,19 +94,23 @@ export default function App() {
             <input
               type="text"
               placeholder="Search products here..."
-              onInput={debouncedFn}
+              value={searchQuery}
+              onChange={handleInputChange}
               className="input_holder"
             />
           </div>
           <table>
             <ProductTable
               products={
-                filteredProducts.length > 0 ? filteredProducts : products
+                searchQuery && filteredProducts.length > 0
+                  ? filteredProducts
+                  : products
               }
             />
           </table>
+
           {/* Trigger to load more products via infinite scrolling */}
-          {hasNextPage && !searchQuery && (
+          {hasNextPage && !isLoading && !searchQuery && (
             <div ref={lastProductRef} className="loading-trigger" />
           )}
         </>
@@ -120,7 +120,7 @@ export default function App() {
       {!isLoading && products.length === 0 && !isError && (
         <p>No products available.</p>
       )}
-      {isLoading &&  <div className="loader"><p>Loading...</p></div>}
+
       {/* Handle error display */}
       {isError && <p className="error">{isError}</p>}
     </div>
