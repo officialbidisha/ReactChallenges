@@ -1,15 +1,19 @@
 const useTraverseTree = () => {
   function insertNode(tree, id, actualItem, isFolder) {
-    debugger;
-    if (tree.id === id && isFolder) {
+    if (tree.id === id && tree.isFolder) {
       tree.children.unshift({
         id: new Date().getTime(),
         name: actualItem,
         isFolder,
         children: [],
       });
+      return tree;
     }
-    return tree;
+    let latestNode = [];
+    latestNode = tree.children.map((t) => {
+      return insertNode(t, id, actualItem, isFolder);
+    });
+    return { ...tree, children: latestNode };
   }
   return { insertNode };
 };

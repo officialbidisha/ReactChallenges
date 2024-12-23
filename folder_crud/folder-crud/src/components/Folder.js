@@ -9,10 +9,9 @@ const Folder = ({ explorer, handleInsertNode }) => {
   const [input, setInput] = useState("");
 
   const addNewFolder = (e) => {
-    debugger;
     setInput(e.target.value);
     if (e.keyCode === 13 && e.target.value) {
-      debugger;
+      setShowInput({ ...input, visible: false });
       handleInsertNode(explorer.id, e.target.value, showInput.isFolder);
     }
   };
@@ -48,7 +47,12 @@ const Folder = ({ explorer, handleInsertNode }) => {
             </div>
           )}
           {explorer.children.map((exp) => {
-            return <Folder explorer={exp}></Folder>;
+            return (
+              <Folder
+                explorer={exp}
+                handleInsertNode={handleInsertNode}
+              ></Folder>
+            );
           })}
         </div>
       </div>
