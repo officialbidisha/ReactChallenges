@@ -6,8 +6,12 @@
 .folder {
   margin-left: 10px;
   display: flex;
+  background-color: beige;
+  min-height: 30px;
 }
 
 .file {
   margin-left: 10px;
+  background-color: wheat;
+  min-height: 30px;
 }

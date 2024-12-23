@@ -15,6 +15,31 @@ const useTraverseTree = () => {
     });
     return { ...tree, children: latestNode };
   }
-  return { insertNode };
+
+  const editNode = (tree, nodeId, newName) => {
+    if (tree.id === nodeId) {
+      tree.name = newName;
+      return tree;
+    }
+    tree.children = tree.children.map((child) =>
+      editNode(child, nodeId, newName)
+    );
+    return tree;
+  };
+
+  const deleteNode = (tree, nodeId) => {
+    if (nodeId === tree.id) return null;
+    if (!tree.children) return tree;
+
+    // Remove the node if it matches the given ID
+    tree.children = tree.children.filter((child) => child.id !== nodeId);
+
+    // Recursively traverse children to delete the node
+    tree.children = tree.children.map((child) => deleteNode(child, nodeId));
+
+    return tree;
+  };
+
+  return { insertNode, editNode, deleteNode };
 };
 export default useTraverseTree;
