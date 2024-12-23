@@ -1,45 +1,68 @@
 const useTraverseTree = () => {
   function insertNode(tree, id, actualItem, isFolder) {
-    if (tree.id === id && tree.isFolder) {
-      tree.children.unshift({
-        id: new Date().getTime(),
-        name: actualItem,
-        isFolder,
-        children: [],
-      });
-      return tree;
+    let queue = [tree];
+
+    while (queue.length) {
+      let currentNode = queue.shift();
+
+      if (currentNode.id === id && currentNode.isFolder) {
+        currentNode.children.unshift({
+          id: new Date().getTime(),
+          name: actualItem,
+          isFolder,
+          children: [],
+        });
+        return tree;
+      }
+
+      if (currentNode.children) {
+        queue.push(...currentNode.children);
+      }
     }
-    let latestNode = [];
-    latestNode = tree.children.map((t) => {
-      return insertNode(t, id, actualItem, isFolder);
-    });
-    return { ...tree, children: latestNode };
+
+    return tree; // Return the tree as is if no match is found
   }
 
   const editNode = (tree, nodeId, newName) => {
-    if (tree.id === nodeId) {
-      tree.name = newName;
-      return tree;
+    let queue = [tree];
+
+    while (queue.length) {
+      let currentNode = queue.shift();
+
+      if (currentNode.id === nodeId) {
+        currentNode.name = newName;
+        return tree;
+      }
+
+      if (currentNode.children) {
+        queue.push(...currentNode.children);
+      }
     }
-    tree.children = tree.children.map((child) =>
-      editNode(child, nodeId, newName)
-    );
-    return tree;
+
+    return tree; // Return the tree as is if no match is found
   };
 
   const deleteNode = (tree, nodeId) => {
-    if (nodeId === tree.id) return null;
-    if (!tree.children) return tree;
+    let queue = [tree];
 
-    // Remove the node if it matches the given ID
-    tree.children = tree.children.filter((child) => child.id !== nodeId);
+    while (queue.length) {
+      let currentNode = queue.shift();
 
-    // Recursively traverse children to delete the node
-    tree.children = tree.children.map((child) => deleteNode(child, nodeId));
+      if (currentNode.children) {
+        currentNode.children = currentNode.children.filter(
+          (child) => child.id !== nodeId
+        );
+        queue.push(...currentNode.children);
+      }
+    }
 
-    return tree;
+    // Check if the root itself should be deleted
+    if (tree.id === nodeId) return null;
+
+    return tree; // Return the modified tree
   };
 
   return { insertNode, editNode, deleteNode };
 };
+
 export default useTraverseTree;
