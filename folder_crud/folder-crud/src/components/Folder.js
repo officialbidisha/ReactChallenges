@@ -31,6 +31,7 @@ const Folder = ({
     if (e.keyCode === 13 && e.target.value) {
       setShowInput({ ...input, visible: false });
       handleInsertNode(explorer.id, e.target.value, showInput.isFolder);
+      setInput("");
     }
   };
 
